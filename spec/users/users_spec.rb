@@ -17,36 +17,26 @@ describe 'トップページ' do
     fill_in :user_email,                 with: 'foo@example.com'
     fill_in :user_password,              with: 'password'
     fill_in :user_password_confirmation, with: 'password'
-    fill_in :user_twitter_username,      with: 'foo'
-    fill_in :user_github_username,       with: 'foo_github'
-    fill_in :user_website,               with: 'http://foo.com'
+    page.save_screenshot("#{capture_name('before_step1_commit.png')}")
+    click_button '登録する'
+    expect(page).to have_selector('h1', '個人情報')
+    page.save_screenshot("#{capture_name('after_step1_commit.png')}")
+
+    fill_in :user_name,                  with: 'foo_bar'
     select '2011',                       from: 'user_date_of_birth_1i'
     select '5月',                        from: 'user_date_of_birth_2i'
     select '20',                         from: 'user_date_of_birth_3i'
     fill_in :user_bio,                   with: 'BIO'
-    page.save_screenshot("#{capture_name('before_create.png')}")
-    click_button '登録する'
-    expect(page).to have_selector('p', 'User was successfully created.')
-    page.save_screenshot("#{capture_name('after_create.png')}")
+    page.save_screenshot("#{capture_name('before_step2_commit.png')}")
+    click_button '設定して次ページへ'
+    expect(page).to have_selector('h1', 'ソーシャル情報')
+    page.save_screenshot("#{capture_name('after_step2_commit.png')}")
+    fill_in :user_twitter_username,      with: 'foo'
+    fill_in :user_github_username,       with: 'foo_github'
+    fill_in :user_website,               with: 'http://foo.com'
+    click_button '設定して次ページへ'
+    expect(page).to have_selector('h1', 'ユーザー一覧')
 
-    click_link '編集'
-    expect(page).to have_selector('h1', 'ユーザー編集')
-    fill_in :user_password,              with: 'password'
-    fill_in :user_password_confirmation, with: 'password'
-    page.save_screenshot("#{capture_name('before_edit.png')}")
-    click_button '更新する'
-    expect(page).to have_selector('p', 'User was successfully created.')
-    page.save_screenshot("#{capture_name('after_edit.png')}")
-
-    click_link '戻る'
-    page.save_screenshot("#{capture_name('after_show.png')}")
-
-    find(:xpath, "(//a[text()='削除'])[1]").click
-    # page.save_screenshot("#{capture_name('before_delete.png')}")
-
-    # alert の OKボタンをクリック
-    page.driver.browser.switch_to.alert.accept
-    page.save_screenshot("#{capture_name('after_delete.png')}")
   end
 
   specify 'ユーザー登録' do
